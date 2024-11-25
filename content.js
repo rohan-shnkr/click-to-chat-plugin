@@ -77,7 +77,14 @@ function createChatUI(x, y) {
             } catch (error) {
                 console.error('Error sending to Gemini:', error);
                 removeMessage(thinkingId);
-                addMessage('system', 'Error: ' + (error.message || 'Could not get response from Gemini'));
+                
+                const errorMessage = error.message || 'Could not get response from Gemini';
+                addMessage('system', 'Error: ' + errorMessage);
+                
+                // If API key is missing or invalid, show a helpful message
+                if (errorMessage.includes('API key')) {
+                    addMessage('system', 'Click the extension icon in the toolbar to set up your API key.');
+                }
             } finally {
                 // Re-enable input and button
                 input.disabled = false;

@@ -25,10 +25,11 @@
       "resources": ["gemini-api.js"],
       "matches": ["<all_urls>"]
     }],
+    "action": {
+      "default_title": "Gemini Text Explainer",
+      "default_popup": "popup.html"
+    },
     "side_panel": {
       "default_path": "sidepanel/index.html"
-    },
-    "action": {
-      "default_title": "View Chat History"
     }
   }

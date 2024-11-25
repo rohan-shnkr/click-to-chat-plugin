@@ -79,8 +79,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (historyButton) {
         historyButton.addEventListener('click', () => {
             console.log('History button clicked');
-            chrome.sidePanel.open();
-            window.close();
+            // Send message to background script to open side panel
+            chrome.runtime.sendMessage({ action: 'openSidePanel' })
+                .then(() => {
+                    window.close(); // Close the popup
+                })
+                .catch(error => {
+                    console.error('Error opening side panel:', error);
+                });
         });
     }
 

@@ -26,10 +26,26 @@
       "matches": ["<all_urls>"]
     }],
     "action": {
-      "default_title": "Gemini Text Explainer",
-      "default_popup": "popup.html"
+      "default_popup": "popup.html",
+      "default_title": "Gemini Settings"
     },
     "side_panel": {
-      "default_path": "sidepanel/index.html"
+      "default_path": "sidepanel/history.html"
+    },
+    "commands": {
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+H",
+          "mac": "Command+Shift+H"
+        },
+        "description": "Open settings"
+      },
+      "toggleSidePanel": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+Y",
+          "mac": "Command+Shift+Y"
+        },
+        "description": "Toggle chat history"
+      }
     }
   }

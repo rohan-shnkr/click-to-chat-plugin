@@ -27,6 +27,7 @@
             border: 1px solid #dadce0;
             border-radius: 4px;
             font-size: 14px;
+            width: calc(100% - 18px);
         }
         input:focus {
             outline: none;
@@ -40,6 +41,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
+            transition: background-color 0.2s;
         }
         button:hover {
             background: #1557b0;
@@ -48,10 +50,20 @@
             background: #dadce0;
             cursor: not-allowed;
         }
+        .secondary-button {
+            background: white;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+            margin-top: 8px;
+        }
+        .secondary-button:hover {
+            background: #f1f8ff;
+        }
         .status {
-            padding: 8px;
+            padding: 8px 12px;
             border-radius: 4px;
             font-size: 14px;
+            margin-top: 8px;
             display: none;
         }
         .status.success {
@@ -67,6 +79,7 @@
         .help-text {
             font-size: 12px;
             color: #5f6368;
+            margin-top: 4px;
         }
         .link {
             color: #1a73e8;
@@ -85,11 +98,19 @@
             <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
             <div class="help-text">
                 Get your API key from 
-                <a href="https://ai.google.dev/" target="_blank" class="link">Google AI Studio</a>
+                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="link">Google AI Studio</a>
             </div>
         </div>
         <button id="saveBtn">Save API Key</button>
+        <button id="historyBtn" class="secondary-button">View Chat History</button>
         <div id="status" class="status"></div>
+        <div class="help-text" style="margin-top: 12px;">
+            Keyboard shortcuts:
+            <br>
+            Ctrl+Shift+H: Open settings
+            <br>
+            Ctrl+Shift+Y: Toggle chat history
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>

@@ -1,16 +1,25 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const apiKeyInput = document.getElementById('apiKey');
     const saveButton = document.getElementById('saveBtn');
+    const historyButton = document.getElementById('historyBtn');
     const statusDiv = document.getElementById('status');
 
+    console.log('Popup script loaded');
+
     // Load existing API key
-    const { apiKey } = await chrome.storage.local.get('apiKey');
-    if (apiKey) {
-        apiKeyInput.value = apiKey;
+    try {
+        const { apiKey } = await chrome.storage.local.get('apiKey');
+        console.log('Existing API key found:', apiKey ? 'Yes' : 'No');
+        if (apiKey) {
+            apiKeyInput.value = apiKey;
+        }
+    } catch (error) {
+        console.error('Error loading API key:', error);
     }
 
     // Save API key
     saveButton.addEventListener('click', async () => {
+        console.log('Save button clicked');
         const apiKey = apiKeyInput.value.trim();
         
         if (!apiKey) {
@@ -19,35 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            // Verify the API key works
-            const isValid = await verifyApiKey(apiKey);
-            
-            if (isValid) {
-                await chrome.storage.local.set({ apiKey });
-                showStatus('API key saved successfully!', 'success');
-                
-                // Notify background script that API key has changed
-                chrome.runtime.sendMessage({ action: 'apiKeyUpdated', apiKey });
-            } else {
-                showStatus('Invalid API key. Please check and try again.', 'error');
-            }
-        } catch (error) {
-            showStatus('Error validating API key. Please try again.', 'error');
-        }
-    });
-
-    function showStatus(message, type) {
-        statusDiv.textContent = message;
-        statusDiv.className = `status ${type}`;
-        setTimeout(() => {
-            statusDiv.className = 'status';
-        }, 3000);
-    }
-
-    async function verifyApiKey(apiKey) {
-        try {
+            // Test the API key before saving
             const response = await fetch(
-                'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=' + apiKey,
+                `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: {
@@ -56,16 +39,66 @@ document.addEventListener('DOMContentLoaded', async () => {
                     body: JSON.stringify({
                         contents: [{
                             parts: [{
-                                text: 'Test'
+                                text: 'Test message'
                             }]
                         }]
                     })
                 }
             );
-            
-            return response.ok;
+
+            console.log('API test response status:', response.status);
+
+            if (response.ok) {
+                // Save the API key
+                await chrome.storage.local.set({ apiKey });
+                console.log('API key saved successfully');
+                showStatus('API key saved successfully!', 'success');
+                
+                // Notify background script
+                try {
+                    await chrome.runtime.sendMessage({ 
+                        action: 'apiKeyUpdated', 
+                        apiKey 
+                    });
+                    console.log('Background script notified');
+                } catch (error) {
+                    console.error('Error notifying background script:', error);
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('API validation failed:', errorData);
+                showStatus('Invalid API key. Please check and try again.', 'error');
+            }
         } catch (error) {
-            return false;
+            console.error('Error saving API key:', error);
+            showStatus('Error saving API key. Please try again.', 'error');
+        }
+    });
+
+    // Open chat history
+    if (historyButton) {
+        historyButton.addEventListener('click', () => {
+            console.log('History button clicked');
+            chrome.sidePanel.open();
+            window.close();
+        });
+    }
+
+    function showStatus(message, type) {
+        console.log('Showing status:', message, type);
+        statusDiv.textContent = message;
+        statusDiv.className = `status ${type}`;
+        statusDiv.style.display = 'block'; // Make sure it's visible
+        
+        // Keep error messages visible longer
+        if (type === 'error') {
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        } else {
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
         }
     }
 });

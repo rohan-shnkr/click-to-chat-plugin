@@ -29,7 +29,7 @@ Welcome to **Click-to-Chat**, a Google Chrome extension that allows you to inter
 4. **Load the Extension**
    - Open Google Chrome and go to `chrome://extensions/`
    - Enable **Developer mode** (toggle switch in the top right corner)
-   - Click on **Load unpacked** and select the `dist` folder from the cloned repository
+   - Click on **Load unpacked** and select the folder from the cloned repository
 
 ## Getting Started
 
